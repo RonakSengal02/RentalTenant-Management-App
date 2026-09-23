@@ -1,0 +1,10 @@
+{
+  "appId": "com.rentmanager.tenantapp",
+  "appName": "RentManager",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500
+    }
+  }
+}

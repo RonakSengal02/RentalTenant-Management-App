@@ -1,0 +1,48 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        rentGreen: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+        },
+        rentRed: {
+          50: '#fef2f2',
+          100: '#fee2e2',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
+        },
+        rentOrange: {
+          50: '#fff7ed',
+          100: '#ffedd5',
+          500: '#f97316',
+          600: '#ea580c',
+          700: '#c2410c',
+        },
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        }
+      },
+      boxShadow: {
+        'card': '0 2px 10px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -2px rgba(0, 0, 0, 0.04)',
+        'modal': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+      }
+    },
+  },
+  plugins: [],
+}
