@@ -1,4 +1,4 @@
-# RentManager | ભાડુઆત વ્યવસ્થાપન
+# RentManager 
 
 [![Download Android APK](https://img.shields.io/badge/📱_DOWNLOAD_ANDROID_APK-DIRECT_DOWNLOAD_(4.5_MB)-059669?style=for-the-badge&logo=android&logoColor=white)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/main/RentManager.apk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
