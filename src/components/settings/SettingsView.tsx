@@ -233,6 +233,30 @@ export const SettingsView: React.FC = () => {
             ? '💡 એપ બંધ કરો, રીસેન્ટમાંથી હટાવો કે ફોન રીસ્ટાર્ટ કરો – તમારો ભાડુઆત અને ચુકવણીનો બધો રેકોર્ડ તમારા ફોનમાં જ સુરક્ષિત સચવાયેલો રહેશે.'
             : '💡 Close the app, swipe it away, or restart your phone – all tenant details and payment histories remain safely saved on your device.'}
         </div>
+
+        <a
+          href="/RentManager.apk"
+          download="RentManager.apk"
+          className="flex items-center justify-between p-3 bg-white hover:bg-emerald-50 border border-emerald-200 rounded-xl transition-all shadow-xs group cursor-pointer"
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="p-2 rounded-lg bg-emerald-600 text-white group-hover:scale-105 transition-transform">
+              <Smartphone className="w-4 h-4" />
+            </span>
+            <div className="text-left">
+              <span className="font-bold text-xs text-slate-900 block">
+                {t.downloadApkTitle}
+              </span>
+              <span className="text-[11px] text-slate-500 block">
+                {t.downloadApkSub}
+              </span>
+            </div>
+          </div>
+          <span className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">
+            <Download className="w-3.5 h-3.5" />
+            <span>4.5 MB</span>
+          </span>
+        </a>
       </div>
 
       {/* Data Safety & Export Section */}

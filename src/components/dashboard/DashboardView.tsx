@@ -18,7 +18,9 @@ import {
   MessageCircle,
   ArrowRight,
   PhoneCall,
-  Receipt
+  Receipt,
+  Smartphone,
+  Download
 } from 'lucide-react';
 
 interface DashboardViewProps {
@@ -75,6 +77,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="space-y-4 pb-20 pt-2 animate-fade-in">
+      {/* 📱 Download Android APK Banner (Direct 1-Click Download) */}
+      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 rounded-2xl p-3 text-white shadow-md shadow-emerald-700/20 flex items-center justify-between gap-3 border border-emerald-500/30">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0">
+            <Smartphone className="w-5 h-5 text-white" />
+          </div>
+          <div className="min-w-0">
+            <div className="font-bold text-xs sm:text-sm flex items-center gap-1.5 truncate">
+              <span>{t.downloadApkTitle}</span>
+              <span className="text-[9px] bg-emerald-300 text-emerald-950 font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider">APK</span>
+            </div>
+            <p className="text-[10px] text-emerald-100 truncate">{t.downloadApkSub}</p>
+          </div>
+        </div>
+        <a
+          href="/RentManager.apk"
+          download="RentManager.apk"
+          className="shrink-0 bg-white hover:bg-emerald-50 active:scale-95 text-emerald-800 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 shadow transition-all cursor-pointer"
+        >
+          <Download className="w-3.5 h-3.5" />
+          <span>{t.downloadApkBtn}</span>
+        </a>
+      </div>
+
       {/* Quick Action Top Bar */}
       <div className="flex gap-2">
         <button

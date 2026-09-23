@@ -1,6 +1,14 @@
 # RentManager | ભાડુઆત વ્યવસ્થાપન
 
-A simple, modern, and user-friendly **Rental & Tenant Management Mobile App** built for property owners and landlords to manage tenants, automate monthly rent cycles, record payments, and track dues with proactive reminders, digital receipts, and bilingual (English + ગુજરાતી) support.
+[![Download Android APK](https://img.shields.io/badge/📱_DOWNLOAD_ANDROID_APK-DIRECT_DOWNLOAD_(4.5_MB)-059669?style=for-the-badge&logo=android&logoColor=white)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/main/RentManager.apk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+> ### 📲 **[Click Here to Download Android App: RentManager.apk (4.5 MB)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/main/RentManager.apk)**
+> ⚡ **Direct Download**: Tap the link above on your phone or PC to immediately download the Android APK.
+> - **100% Local Phone Storage** (IndexedDB persistent disk storage)
+> - **100% Offline Capable** (Works without internet)
+> - **Bilingual Support** (English + ગુજરાતી)
+> - **Clean PDF Receipts & Statements**
 
 ---
 

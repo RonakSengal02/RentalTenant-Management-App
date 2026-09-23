@@ -53,6 +53,9 @@ export const gu: TranslationType = {
   quickActions: 'ઝડપી વિકલ્પો',
   addTenantBtn: '+ નવો ભાડુઆત',
   recordPaymentBtn: 'ભાડું જમા કરો',
+  downloadApkTitle: 'એન્ડ્રોઇડ એપ ડાઉનલોડ કરો',
+  downloadApkSub: 'ઓફલાઇન ઉપયોગ માટે ફોનમાં સીધી ઇન્સ્ટોલ કરો',
+  downloadApkBtn: 'APK ડાઉનલોડ કરો (4.5 MB)',
 
   // Tenants Section
   tenantsTitle: 'ભાડુઆત યાદી',

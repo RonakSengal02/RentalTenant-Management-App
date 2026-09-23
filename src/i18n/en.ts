@@ -51,6 +51,9 @@ export const en = {
   quickActions: 'Quick Actions',
   addTenantBtn: '+ Add Tenant',
   recordPaymentBtn: 'Record Payment',
+  downloadApkTitle: 'Download Android App',
+  downloadApkSub: 'Direct APK install for 100% offline use',
+  downloadApkBtn: 'Download APK (4.5 MB)',
 
   // Tenants Section
   tenantsTitle: 'Tenant Directory',
