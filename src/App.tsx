@@ -12,7 +12,14 @@ import { TenantDetailModal } from './components/tenants/TenantDetailModal';
 import { RecordPaymentModal } from './components/payments/RecordPaymentModal';
 import { ReceiptModal } from './components/payments/ReceiptModal';
 import { NotificationCenterModal } from './components/notifications/NotificationCenterModal';
+import { MonthlyReportView } from './components/reports/MonthlyReportView';
+import { YearlyReportView } from './components/reports/YearlyReportView';
+import { RoomManagementModal } from './components/rooms/RoomManagementModal';
+import { CalendarView } from './components/calendar/CalendarView';
+import { PinLockModal } from './components/auth/PinLockModal';
+import { ActivityLogModal } from './components/activity/ActivityLogModal';
 import { Tenant, PaymentRecord } from './types';
+import { ArrowLeft } from 'lucide-react';
 
 export const App: React.FC = () => {
   const { language } = useLanguage();
@@ -21,12 +28,14 @@ export const App: React.FC = () => {
     createTenant,
     editTenant,
     selectedReceiptPayment,
-    setSelectedReceiptPayment
+    setSelectedReceiptPayment,
+    isPinLocked
   } = useApp();
 
   // Navigation state
   const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
   const [tenantListFilter, setTenantListFilter] = useState<string>('all');
+  const [activeReportView, setActiveReportView] = useState<'none' | 'monthly' | 'yearly' | 'calendar'>('none');
 
   // Display mode: Mobile phone frame simulator or full width
   const [isMobileFrame, setIsMobileFrame] = useState<boolean>(true);
@@ -40,6 +49,9 @@ export const App: React.FC = () => {
   const [paymentTargetTenant, setPaymentTargetTenant] = useState<Tenant | null>(null);
 
   const [isNotificationCenterOpen, setIsNotificationCenterOpen] = useState(false);
+  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
+  const [isPinSetupModalOpen, setIsPinSetupModalOpen] = useState(false);
 
   // Handlers
   const handleOpenAddTenant = () => {
@@ -115,48 +127,90 @@ export const App: React.FC = () => {
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto px-4 py-2 bg-slate-100/70">
-          {currentTab === 'dashboard' && (
-            <DashboardView
-              onOpenAddTenant={handleOpenAddTenant}
-              onOpenRecordPayment={handleOpenRecordPayment}
-              onSelectTenant={(t) => setSelectedTenantDetail(t)}
-              onNavigateToTenants={handleNavigateToTenants}
-              onNavigateToPayments={() => setCurrentTab('payments')}
-            />
-          )}
+          {activeReportView !== 'none' ? (
+            <div className="space-y-3">
+              <button
+                onClick={() => setActiveReportView('none')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>{language === 'gu' ? 'ડેશબોર્ડ પર પાછા જાઓ' : 'Back to Dashboard'}</span>
+              </button>
 
-          {currentTab === 'tenants' && (
-            <TenantListView
-              initialFilter={tenantListFilter}
-              onOpenAddTenant={handleOpenAddTenant}
-              onSelectTenant={(t) => setSelectedTenantDetail(t)}
-              onRecordPayment={handleOpenRecordPayment}
-            />
-          )}
+              {activeReportView === 'calendar' && (
+                <CalendarView
+                  onSelectTenant={(t) => setSelectedTenantDetail(t)}
+                  onOpenRecordPayment={() => handleOpenRecordPayment()}
+                />
+              )}
 
-          {currentTab === 'payments' && (
-            <PaymentHistoryView
-              onOpenRecordPayment={() => handleOpenRecordPayment()}
-            />
-          )}
+              {activeReportView === 'monthly' && (
+                <MonthlyReportView onClose={() => setActiveReportView('none')} />
+              )}
 
-          {currentTab === 'notifications' && (
-            <div className="pt-2">
-              <NotificationCenterModal
-                isOpen={true}
-                onClose={() => setCurrentTab('dashboard')}
-                onRecordPaymentForTenant={handleRecordPaymentForTenantId}
-              />
+              {activeReportView === 'yearly' && (
+                <YearlyReportView onSelectMonth={() => setActiveReportView('monthly')} />
+              )}
             </div>
-          )}
+          ) : (
+            <>
+              {currentTab === 'dashboard' && (
+                <DashboardView
+                  onOpenAddTenant={handleOpenAddTenant}
+                  onOpenRecordPayment={handleOpenRecordPayment}
+                  onSelectTenant={(t) => setSelectedTenantDetail(t)}
+                  onNavigateToTenants={handleNavigateToTenants}
+                  onNavigateToPayments={() => setCurrentTab('payments')}
+                  onOpenRooms={() => setIsRoomModalOpen(true)}
+                  onOpenCalendar={() => setActiveReportView('calendar')}
+                  onOpenMonthlyReport={() => setActiveReportView('monthly')}
+                  onOpenYearlyReport={() => setActiveReportView('yearly')}
+                />
+              )}
 
-          {currentTab === 'settings' && <SettingsView />}
+              {currentTab === 'tenants' && (
+                <TenantListView
+                  initialFilter={tenantListFilter}
+                  onOpenAddTenant={handleOpenAddTenant}
+                  onSelectTenant={(t) => setSelectedTenantDetail(t)}
+                  onRecordPayment={handleOpenRecordPayment}
+                />
+              )}
+
+              {currentTab === 'payments' && (
+                <PaymentHistoryView
+                  onOpenRecordPayment={() => handleOpenRecordPayment()}
+                />
+              )}
+
+              {currentTab === 'notifications' && (
+                <div className="pt-2">
+                  <NotificationCenterModal
+                    isOpen={true}
+                    onClose={() => setCurrentTab('dashboard')}
+                    onRecordPaymentForTenant={handleRecordPaymentForTenantId}
+                  />
+                </div>
+              )}
+
+              {currentTab === 'settings' && (
+                <SettingsView
+                  onOpenRooms={() => setIsRoomModalOpen(true)}
+                  onOpenActivityLog={() => setIsActivityModalOpen(true)}
+                  onOpenPinSetup={() => setIsPinSetupModalOpen(true)}
+                  onOpenMonthlyReport={() => setActiveReportView('monthly')}
+                  onOpenYearlyReport={() => setActiveReportView('yearly')}
+                />
+              )}
+            </>
+          )}
         </main>
 
         {/* Bottom Navigation */}
         <Navigation
           currentTab={currentTab}
           onChangeTab={(tab) => {
+            setActiveReportView('none');
             if (tab === 'notifications') {
               setIsNotificationCenterOpen(true);
             } else {
@@ -171,6 +225,10 @@ export const App: React.FC = () => {
           tenantToEdit={tenantToEdit}
           onClose={() => setIsTenantFormOpen(false)}
           onSave={handleSaveTenant}
+          onSelectExistingTenant={(t) => {
+            setIsTenantFormOpen(false);
+            setSelectedTenantDetail(t);
+          }}
         />
 
         <TenantDetailModal
@@ -194,6 +252,40 @@ export const App: React.FC = () => {
           payment={selectedReceiptPayment}
           onClose={() => setSelectedReceiptPayment(null)}
         />
+
+        {/* Room Management Modal */}
+        <RoomManagementModal
+          isOpen={isRoomModalOpen}
+          onClose={() => setIsRoomModalOpen(false)}
+          onAssignTenant={() => handleOpenAddTenant()}
+          onViewTenant={(t) => {
+            setIsRoomModalOpen(false);
+            setSelectedTenantDetail(t);
+          }}
+        />
+
+        {/* Activity Audit Log Modal */}
+        <ActivityLogModal
+          isOpen={isActivityModalOpen}
+          onClose={() => setIsActivityModalOpen(false)}
+        />
+
+        {/* PIN Setup Modal */}
+        {isPinSetupModalOpen && (
+          <PinLockModal
+            mode="setup"
+            isOpen={true}
+            onClose={() => setIsPinSetupModalOpen(false)}
+          />
+        )}
+
+        {/* App Lock Overlay (Active when PIN locked) */}
+        {isPinLocked && (
+          <PinLockModal
+            mode="unlock"
+            isOpen={true}
+          />
+        )}
 
         {/* Top-level notification drawer (when opened from bell) */}
         {isNotificationCenterOpen && currentTab !== 'notifications' && (

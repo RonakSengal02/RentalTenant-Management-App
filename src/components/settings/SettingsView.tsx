@@ -23,13 +23,38 @@ import {
   Info,
   Smartphone,
   HardDrive,
-  FileText
+  FileText,
+  Lock,
+  Home,
+  History,
+  TrendingUp,
+  Calendar,
+  KeyRound,
+  Sun,
+  Moon,
+  Palette
 } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 import { downloadFullRentalReportPDF } from '../../utils/pdfUtils';
 
-export const SettingsView: React.FC = () => {
+interface SettingsViewProps {
+  onOpenRooms?: () => void;
+  onOpenActivityLog?: () => void;
+  onOpenPinSetup?: () => void;
+  onOpenMonthlyReport?: () => void;
+  onOpenYearlyReport?: () => void;
+}
+
+export const SettingsView: React.FC<SettingsViewProps> = ({
+  onOpenRooms,
+  onOpenActivityLog,
+  onOpenPinSetup,
+  onOpenMonthlyReport,
+  onOpenYearlyReport
+}) => {
   const { t, language, setLanguage } = useLanguage();
-  const { tenants, payments, metrics, restoreSampleData, resetDatabase, reloadAllData } = useApp();
+  const { themeMode, setThemeMode, isDark } = useTheme();
+  const { tenants, payments, metrics, restoreSampleData, resetDatabase, reloadAllData, hasPinSet } = useApp();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -186,6 +211,78 @@ export const SettingsView: React.FC = () => {
         </div>
       </div>
 
+      {/* Theme & Appearance Section */}
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-card">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 rounded-xl bg-purple-50 text-purple-600">
+              <Palette className="w-4 h-4" />
+            </span>
+            <div>
+              <h3 className="font-bold text-sm text-slate-900">
+                {t.themeTitle}
+              </h3>
+              <p className="text-[11px] text-slate-500">{t.themeDesc}</p>
+            </div>
+          </div>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+            {themeMode === 'system'
+              ? (isDark ? 'Dark (Auto)' : 'Light (Auto)')
+              : themeMode === 'dark' ? 'Dark' : 'Light'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2">
+          {/* Light Mode */}
+          <button
+            onClick={() => setThemeMode('light')}
+            className={`p-3 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all ${
+              themeMode === 'light'
+                ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-500/20 text-blue-700'
+                : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+            }`}
+          >
+            <span className={`p-2 rounded-xl ${themeMode === 'light' ? 'bg-amber-100 text-amber-600' : 'bg-white text-slate-500 shadow-2xs'}`}>
+              <Sun className="w-5 h-5" />
+            </span>
+            <div className="font-bold text-xs">{t.themeLight}</div>
+            <div className="text-[10px] text-slate-400 line-clamp-1">{language === 'gu' ? 'લાઇટ' : 'Daytime'}</div>
+          </button>
+
+          {/* Dark Mode */}
+          <button
+            onClick={() => setThemeMode('dark')}
+            className={`p-3 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all ${
+              themeMode === 'dark'
+                ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-500/20 text-blue-700'
+                : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+            }`}
+          >
+            <span className={`p-2 rounded-xl ${themeMode === 'dark' ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-slate-500 shadow-2xs'}`}>
+              <Moon className="w-5 h-5" />
+            </span>
+            <div className="font-bold text-xs">{t.themeDark}</div>
+            <div className="text-[10px] text-slate-400 line-clamp-1">{language === 'gu' ? 'ડાર્ક' : 'Night'}</div>
+          </button>
+
+          {/* Default as Mobile (System) */}
+          <button
+            onClick={() => setThemeMode('system')}
+            className={`p-3 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all ${
+              themeMode === 'system'
+                ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-500/20 text-blue-700'
+                : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+            }`}
+          >
+            <span className={`p-2 rounded-xl ${themeMode === 'system' ? 'bg-emerald-100 text-emerald-600' : 'bg-white text-slate-500 shadow-2xs'}`}>
+              <Smartphone className="w-5 h-5" />
+            </span>
+            <div className="font-bold text-xs">{t.themeSystem}</div>
+            <div className="text-[10px] text-slate-400 line-clamp-1">{language === 'gu' ? 'ડિફોલ્ટ' : 'Auto'}</div>
+          </button>
+        </div>
+      </div>
+
       {/* Phone Local Storage Health & Protection Card */}
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-2xl p-4 border border-blue-200/80 shadow-card space-y-2.5">
         <div className="flex items-center justify-between">
@@ -234,29 +331,180 @@ export const SettingsView: React.FC = () => {
             : '💡 Close the app, swipe it away, or restart your phone – all tenant details and payment histories remain safely saved on your device.'}
         </div>
 
+        {/* APK Version 1.0.1 (Latest) */}
         <a
-          href="/RentManager.apk"
-          download="RentManager.apk"
-          className="flex items-center justify-between p-3 bg-white hover:bg-emerald-50 border border-emerald-200 rounded-xl transition-all shadow-xs group cursor-pointer"
+          href="/RentManager-v1.0.1.apk"
+          download="RentManager-v1.0.1.apk"
+          className="flex items-center justify-between p-3 bg-white hover:bg-emerald-50 border border-emerald-300 rounded-xl transition-all shadow-xs group cursor-pointer"
         >
           <div className="flex items-center gap-2.5">
             <span className="p-2 rounded-lg bg-emerald-600 text-white group-hover:scale-105 transition-transform">
               <Smartphone className="w-4 h-4" />
             </span>
             <div className="text-left">
-              <span className="font-bold text-xs text-slate-900 block">
-                {t.downloadApkTitle}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-xs text-slate-900 block">
+                  RentManager APK (v1.0.1)
+                </span>
+                <span className="text-[9px] font-black bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full uppercase">
+                  Latest
+                </span>
+              </div>
               <span className="text-[11px] text-slate-500 block">
-                {t.downloadApkSub}
+                {language === 'gu' ? 'પિન લોક, રિપોર્ટ્સ, કેલેન્ડર અને રોકાણ ઇતિહાસ સાથે' : 'With PIN lock, reports, rooms, stays & calendar'}
               </span>
             </div>
           </div>
           <span className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">
             <Download className="w-3.5 h-3.5" />
-            <span>4.5 MB</span>
+            <span>v1.0.1</span>
           </span>
         </a>
+
+        {/* APK Version 1.0.0 (Previous Release) */}
+        <a
+          href="/RentManager.apk"
+          download="RentManager.apk"
+          className="flex items-center justify-between p-2.5 bg-white/70 hover:bg-slate-50 border border-slate-200 rounded-xl transition-all shadow-2xs group cursor-pointer"
+        >
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-slate-200 text-slate-700">
+              <Smartphone className="w-3.5 h-3.5" />
+            </span>
+            <div className="text-left">
+              <span className="font-semibold text-xs text-slate-700 block">
+                RentManager APK (v1.0.0)
+              </span>
+              <span className="text-[10px] text-slate-400 block">
+                {language === 'gu' ? 'અગાઉનું મૂળ વર્ઝન' : 'Original earlier release'}
+              </span>
+            </div>
+          </div>
+          <span className="flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg">
+            <Download className="w-3 h-3" />
+            <span>v1.0.0</span>
+          </span>
+        </a>
+      </div>
+
+      {/* Security & Management Tools Section */}
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-card space-y-3">
+        <div className="flex items-center gap-2">
+          <span className="p-1.5 rounded-xl bg-indigo-50 text-indigo-600">
+            <Lock className="w-4 h-4" />
+          </span>
+          <div>
+            <h3 className="font-bold text-sm text-slate-900">
+              {language === 'gu' ? 'સુરક્ષા અને વધારાના સાધનો' : 'Security & Management Tools'}
+            </h3>
+            <p className="text-[11px] text-slate-500">
+              {language === 'gu' ? 'પિન સુરક્ષા, રૂમ અને ઓડિટ વ્યવસ્થાપન' : '4-digit app PIN lock, room status and audit history'}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          {/* PIN Lock Setup Button */}
+          <button
+            onClick={onOpenPinSetup}
+            className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <KeyRound className="w-4 h-4 text-indigo-600" />
+              <div>
+                <span className="font-bold text-xs text-slate-900 block">
+                  {language === 'gu' ? '૪-અંકનો એપ પિન' : '4-Digit App PIN Lock'}
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  {hasPinSet
+                    ? (language === 'gu' ? '✓ પિન સક્રિય છે (સુધારો)' : '✓ Enabled (Change PIN)')
+                    : (language === 'gu' ? 'હવે સેટ કરો' : 'Protect with PIN')}
+                </span>
+              </div>
+            </div>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+              hasPinSet ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700'
+            }`}>
+              {hasPinSet ? 'Active' : 'Off'}
+            </span>
+          </button>
+
+          {/* Room Management Button */}
+          <button
+            onClick={onOpenRooms}
+            className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <Home className="w-4 h-4 text-blue-600" />
+              <div>
+                <span className="font-bold text-xs text-slate-900 block">
+                  {language === 'gu' ? 'રૂમ અને યુનિટ સંચાલન' : 'Room & Unit Management'}
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  {language === 'gu' ? 'ખાલી અને ભરાયેલ રૂમ' : 'Track vacancies & maintenance'}
+                </span>
+              </div>
+            </div>
+            <span className="text-[11px] font-bold text-blue-600">→</span>
+          </button>
+
+          {/* Activity Log Button */}
+          <button
+            onClick={onOpenActivityLog}
+            className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <History className="w-4 h-4 text-purple-600" />
+              <div>
+                <span className="font-bold text-xs text-slate-900 block">
+                  {language === 'gu' ? 'પ્રવૃત્તિ ઓડિટ લોગ' : 'Activity Audit Log'}
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  {language === 'gu' ? 'તમામ ક્રિયાઓનો ઇતિહાસ' : 'Full system activity logs'}
+                </span>
+              </div>
+            </div>
+            <span className="text-[11px] font-bold text-purple-600">→</span>
+          </button>
+
+          {/* Monthly Report Button */}
+          <button
+            onClick={onOpenMonthlyReport}
+            className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <FileText className="w-4 h-4 text-emerald-600" />
+              <div>
+                <span className="font-bold text-xs text-slate-900 block">
+                  {language === 'gu' ? 'માસિક નાણાકીય અહેવાલ' : 'Monthly Financial Report'}
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  {language === 'gu' ? 'મહિના મુજબ ભાડું વસૂલાત' : 'Demand, collection & dues'}
+                </span>
+              </div>
+            </div>
+            <span className="text-[11px] font-bold text-emerald-600">→</span>
+          </button>
+
+          {/* Yearly Report Button */}
+          <button
+            onClick={onOpenYearlyReport}
+            className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <TrendingUp className="w-4 h-4 text-indigo-600" />
+              <div>
+                <span className="font-bold text-xs text-slate-900 block">
+                  {language === 'gu' ? 'વાર્ષિક નાણાકીય અહેવાલ' : 'Yearly Financial Report'}
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  {language === 'gu' ? '૧૨ મહિનાનો વૃદ્ધિ ચાર્ટ' : '12-Month revenue trend chart'}
+                </span>
+              </div>
+            </div>
+            <span className="text-[11px] font-bold text-indigo-600">→</span>
+          </button>
+        </div>
       </div>
 
       {/* Data Safety & Export Section */}
@@ -455,7 +703,7 @@ export const SettingsView: React.FC = () => {
 
       {/* App Info Footer */}
       <div className="text-center pt-2 text-xs text-slate-400 space-y-1">
-        <p className="font-bold text-slate-600">RentManager Mobile v1.0.0</p>
+        <p className="font-bold text-slate-600">RentManager Mobile v1.0.1</p>
         <p>Built for Property Owners & Landlords • ભાડુઆત વ્યવસ્થાપન</p>
       </div>
     </div>

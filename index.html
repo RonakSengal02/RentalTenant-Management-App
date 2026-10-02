@@ -35,6 +35,19 @@
       }
     </style>
     <script>
+      // Immediate Theme Mode Detection (prevents flash of white on dark mode)
+      (function() {
+        try {
+          var mode = localStorage.getItem('rentmanager_theme_mode') || 'system';
+          var isDark = mode === 'dark' || (mode === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            var metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) metaThemeColor.setAttribute('content', '#0b0f19');
+          }
+        } catch (e) {}
+      })();
+
       // Register Service Worker for offline capability
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -45,7 +58,7 @@
       }
     </script>
   </head>
-  <body class="bg-slate-100 text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
+  <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

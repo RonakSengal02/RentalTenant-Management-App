@@ -20,12 +20,13 @@ export const gu: TranslationType = {
   amount: 'રકમ',
   loading: 'લોડ થઈ રહ્યું છે...',
   confirmDelete: 'શું તમે ખરેખર આ કાઢી નાખવા માંગો છો?',
-  deleteWarning: 'આ ભાડુઆતની તમામ જૂની ચુકવણીઓ પણ કાઢી નાખવામાં આવશે.',
+  deleteWarning: 'આ રેકોર્ડ કાયમ માટે કાઢી નાખવામાં આવશે.',
   yesDelete: 'હા, કાઢી નાખો',
   noKeep: 'ના, રહેવા દો',
 
   // Statuses
   paid: 'ચૂકવેલ',
+  partial: 'અંશતઃ ચૂકવેલ (પાર્શિયલ)',
   pending: 'બાકી',
   overdue: 'મુદત વીતી ગઈ (ઓવરડ્યુ)',
   dueToday: 'આજે બાકી',
@@ -35,6 +36,8 @@ export const gu: TranslationType = {
   navDashboard: 'ડેશબોર્ડ',
   navTenants: 'ભાડુઆત',
   navPayments: 'ભાડું જમા',
+  navReports: 'રિપોર્ટ્સ',
+  navCalendar: 'કેલેન્ડર',
   navNotifications: 'સૂચનાઓ',
   navSettings: 'સેટિંગ્સ',
 
@@ -47,31 +50,46 @@ export const gu: TranslationType = {
   pendingTenants: 'બાકી ભાડુઆત',
   overdueTenants: 'ઓવરડ્યુ ભાડુઆત',
   upcomingRentDue: 'આજે અને આગામી ભાડું',
-  noUpcomingRent: 'આગામી 5 દિવસમાં કોઈ ભાડું બાકી નથી.',
+  noUpcomingRent: 'આગામી ૭ દિવસમાં કોઈ ભાડું બાકી નથી.',
   recentPayments: 'તાજેતરની ચુકવણીઓ',
   noRecentPayments: 'હજુ સુધી કોઈ ચુકવણી નોંધાઈ નથી.',
   quickActions: 'ઝડપી વિકલ્પો',
   addTenantBtn: '+ નવો ભાડુઆત',
   recordPaymentBtn: 'ભાડું જમા કરો',
   downloadApkTitle: 'એન્ડ્રોઇડ એપ ડાઉનલોડ કરો',
-  downloadApkSub: 'ઓફલાઇન ઉપયોગ માટે ફોનમાં સીધી ઇન્સ્ટોલ કરો',
+  downloadApkSub: 'ઓફલાઇન ઉપયોગ માટે સીધી ઇન્સ્ટોલ કરો (v1.0.1)',
   downloadApkBtn: 'APK ડાઉનલોડ કરો (4.5 MB)',
 
   // Tenants Section
   tenantsTitle: 'ભાડુઆત યાદી',
-  searchPlaceholder: 'નામ, મોબાઈલ કે રૂમ નંબર શોધો...',
+  searchPlaceholder: 'નામ, મોબાઈલ, આઈડી કે રૂમ નંબર શોધો...',
   addTenantModalTitle: 'નવા ભાડુઆતની નોંધણી',
   editTenantModalTitle: 'ભાડુઆતની વિગતો સુધારો',
+  tenantId: 'ભાડુઆત ID',
   tenantName: 'ભાડુઆતનું પૂરું નામ',
-  tenantNamePlaceholder: 'દા.ત. રાહુલ પટેલ',
+  tenantNamePlaceholder: 'દા.ત. સુભાષ શર્મા',
   mobileNumber: 'મોબાઈલ નંબર',
   mobilePlaceholder: 'દા.ત. 9876543210',
+  alternateMobile: 'બીજો મોબાઈલ નંબર',
+  alternateMobilePlaceholder: 'દા.ત. 9876500000',
   tenantPhoto: 'ભાડુઆતનો ફોટો',
+  documentPhoto: 'આધાર કાર્ડ / ઓળખપત્ર ફોટો',
+  uploadDoc: 'ઓળખ દસ્તાવેજ અપલોડ કરો',
+  viewDoc: 'દસ્તાવેજ જુઓ',
+  replaceDoc: 'દસ્તાવેજ બદલો',
+  deleteDoc: 'દસ્તાવેજ કાઢી નાખો',
+  occupation: 'વ્યવસાય / કામકાજ',
+  occupationPlaceholder: 'દા.ત. નોકરી, વેપાર',
+  emergencyContact: 'ઈમરજન્સી સંપર્ક (નામ અને ફોન)',
+  emergencyPlaceholder: 'દા.ત. રમેશ પટેલ (પિતા) - 9825011111',
+  occupantsCount: 'રહેનારા સભ્યોની સંખ્યા',
   roomNumber: 'રૂમ / મકાન નંબર',
   roomPlaceholder: 'દા.ત. 102 અથવા ફ્લેટ B-4',
   address: 'કાયમી સરનામું',
-  addressPlaceholder: 'દા.ત. આણંદ, ગુજરાત',
+  addressPlaceholder: 'દા.ત. સ્ટેશન પાસે, વડોદરા',
   joiningDate: 'મકાનમાં આવ્યા તારીખ',
+  expectedMoveOutDate: 'અપેક્ષિત ખાલી કરવાની તારીખ',
+  actualMoveOutDate: 'ખરેખર ખાલી કર્યા તારીખ',
   monthlyRentAmount: 'માસિક ભાડાની રકમ (₹)',
   monthlyRentPlaceholder: 'દા.ત. 7000',
   securityDeposit: 'ડિપોઝિટ રકમ (₹)',
@@ -86,6 +104,38 @@ export const gu: TranslationType = {
   whatsappReceipt: 'પહોંચ મોકલો',
   emptyTenants: 'કોઈ ભાડુઆત મળ્યા નથી. નવો ભાડુઆત ઉમેરવા માટે "+ નવો ભાડુઆત" દબાવો.',
 
+  // Referral System
+  referredBy: 'કોના સંદર્ભે આવ્યા? (રેફરલ)',
+  referredByDirect: 'સીધા (ડાયરેક્ટ)',
+  referredByExisting: 'અગાઉના / ચાલુ ભાડુઆત',
+  referredByOther: 'અન્ય વ્યક્તિ',
+  selectReferringTenant: 'રેફરલ કરનાર ભાડુઆત પસંદ કરો',
+  referringPersonName: 'સંદર્ભ આપનારનું નામ અને ફોન',
+  referredTenants: 'આમના સંદર્ભે આવેલા ભાડુઆતો',
+
+  // Stay History
+  staysTitle: 'મુકામ ઇતિહાસ (Stays)',
+  startNewStay: 'નવો મુકામ શરૂ કરો',
+  endCurrentStay: 'હાલનો મુકામ પૂર્ણ કરો (ખાલી કર્યું)',
+  stayDuration: 'સમયગાળો',
+  activeStay: 'હાલનો ચાલુ મુકામ',
+  pastStays: 'જૂના મુકામો',
+  notes: 'વિશેષ નોંધ',
+
+  // Timeline
+  timelineTitle: 'સમયરેખા (Timeline)',
+
+  // Rent Ledger & Partial Payments
+  rentLedger: 'માસિક ખાતાવહી (લેજર)',
+  totalRentDue: 'કુલ ભાડું',
+  totalPaid: 'જમા ભાડું',
+  totalPending: 'બાકી ભાડું',
+  remainingPending: 'હજુ બાકી રકમ',
+  previousPending: 'અગાઉની બાકી રકમ',
+  receivedBy: 'ભાડું સ્વીકારનાર',
+  receivedByPlaceholder: 'દા.ત. ચિરાગ / મકાનમાલિક',
+  transactionRef: 'ટ્રાન્ઝેક્શન / સંદર્ભ નંબર',
+
   // Payment Section
   paymentsTitle: 'ભાડા ચુકવણી અને ઇતિહાસ',
   recordPaymentModalTitle: 'ભાડું જમા લો',
@@ -96,6 +146,7 @@ export const gu: TranslationType = {
   methodCash: 'રોકડ (Cash)',
   methodUPI: 'UPI (GPay / PhonePe / Paytm)',
   methodBank: 'બેંક ટ્રાન્સફર (NEFT/IMPS)',
+  methodOtherOnline: 'ઓનલાઈન ટ્રાન્સફર',
   methodOther: 'ચેક / અન્ય',
   paymentRefNotes: 'નોંધ / સંદર્ભ નંબર',
   paymentRefPlaceholder: 'દા.ત. UPI રેફરન્સ કે ચેક નંબર',
@@ -109,15 +160,60 @@ export const gu: TranslationType = {
   thisYear: 'આ વર્ષે',
   emptyPayments: 'હજુ સુધી કોઈ ચુકવણી ઇતિહાસ નથી.',
 
+  // Reports
+  monthlyReport: 'માસિક ભાડા રિપોર્ટ',
+  yearlyReport: 'વાર્ષિક ભાડા રિપોર્ટ',
+  collectionTrend: 'માસિક આવક વલણ (ચાર્ટ)',
+  occupancyRate: 'મકાન કબજો આંકડા',
+  vacantRooms: 'ખાલી રૂમ',
+
+  // Room Management
+  roomsTitle: 'રૂમ અને પ્રોપર્ટી વ્યવસ્થાપન',
+  vacant: 'ખાલી',
+  occupied: 'ભરેલ',
+  reserved: 'રિઝર્વ્ડ',
+  addRoom: 'નવો રૂમ ઉમેરો',
+  floor: 'માળ (Floor)',
+  propertyName: 'પ્રોપર્ટીનું નામ',
+
+  // Calendar
+  calendarTitle: 'ભાડા અને ઇવેન્ટ કેલેન્ડર',
+
+  // Security & PIN
+  pinLock: '૪-અંક PIN સુરક્ષા લોક',
+  enterPin: '૪-અંકનો PIN દાખલ કરો',
+  setPin: '૪-અંકનો PIN સેટ કરો',
+  confirmPin: 'PIN ની પુષ્ટિ કરો',
+  changePin: 'PIN બદલો',
+  disablePin: 'PIN લોક બંધ કરો',
+  unlock: 'એપ અનલોક કરો',
+  incorrectPin: 'ખોટો PIN. કૃપા કરીને ફરી પ્રયાસ કરો.',
+  pinSetSuccess: 'PIN સફળતાપૂર્વક સેટ થયો!',
+
+  // Archive & Duplicate
+  archiveTenant: 'ભાડુઆત આર્કાઇવ કરો',
+  restoreTenant: 'ભાડુઆત પુનઃસ્થાપિત કરો',
+  duplicateWarning: 'આ નંબર પર ભાડુઆત પહેલેથી નોંધાયેલ છે',
+  duplicateDesc: 'આ મોબાઈલ નંબર સાથે અગાઉથી ભાડુઆત ઉપલબ્ધ છે.',
+  openExisting: 'હાલના ભાડુઆતને ખોલો',
+  createNewAnyway: 'છતાં પણ નવો બનાવો',
+
+  // Activity Log
+  activityLog: 'પ્રવૃત્તિ ઇતિહાસ (Audit Log)',
+
   // Notifications
   notificationsTitle: 'ભાડા સૂચનાઓ અને રિમાઇન્ડર',
   markAllAsRead: 'બધા વંચાયેલ ચિહ્નિત કરો',
   clearAllNotifications: 'બધા સાફ કરો',
   noNotifications: 'બધું બરાબર છે! અત્યારે કોઈ નવી સૂચના નથી.',
   reminderSettings: 'રિમાઇન્ડર સેટિંગ્સ',
-  notify3DaysBefore: 'તારીખના ૩ દિવસ પહેલા',
+  notify7DaysBefore: '૭ દિવસ પહેલા',
+  notify3DaysBefore: '૩ દિવસ પહેલા',
+  notifyTomorrow: '૧ દિવસ પહેલા (આવતીકાલે)',
   notifyOnDueDate: 'ભાડાની તારીખે (આજે)',
-  notify3DaysAfter: '૩ દિવસ પછી (બાકી રહે તો)',
+  notifyOverdue: 'મુદત વીતી જાય ત્યારે (ઓવરડ્યુ)',
+  notify3DaysAfter: '૩ દિવસ પછી (ઓવરડ્યુ)',
+  notifyStayEnding: 'મુકામ પૂર્ણ થવા અંગે',
   enablePushNotifications: 'બ્રાઉઝર પુશ સૂચનાઓ',
   pushGranted: 'ચાલુ છે',
   pushDenied: 'પરવાનગી નકારી',
@@ -127,32 +223,29 @@ export const gu: TranslationType = {
   settingsTitle: 'સેટિંગ્સ અને ડેટા સુરક્ષા',
   language: 'એપ્લિકેશન ભાષા / Language',
   dataSafety: 'ડેટા સુરક્ષા અને બેકઅપ',
-  dataSafetyDesc: 'તમારો ભાડાનો બધો ડેટા તમારા ફોનમાં સુરક્ષિત રહે છે.',
+  dataSafetyDesc: 'તમારો ભાડાનો બધો ડેટા ૧૦૦% ઓફલાઇન તમારા ફોનમાં સુરક્ષિત રહે છે.',
   backupData: 'ડેટા બેકઅપ લો (JSON ડાઉનલોડ)',
   restoreData: 'ડેટા પુનઃસ્થાપિત કરો (JSON અપલોડ)',
   exportExcel: 'Excel / CSV માં એક્સપોર્ટ કરો',
   downloadPDFReport: 'સંપૂર્ણ રિપોર્ટ (PDF ડાઉનલોડ)',
   downloadReceiptPDF: 'પહોંચ (PDF ડાઉનલોડ)',
   downloadTenantStatementPDF: 'ભાડુઆત ખાતાવહી (PDF)',
+  includeIdDocInExport: 'પીડીએફમાં ઓળખ દસ્તાવેજ પણ સામેલ કરો',
   sampleData: 'સેમ્પલ ડેટા ફરીથી લાવો',
   clearAllData: 'બધો ડેટા સાફ કરો',
-  sampleDataDesc: 'એપ ચકાસવા માટે સેમ્પલ ભાડુઆતો (રાહુલ પટેલ, પ્રિયા શાહ) ઉમેરો.',
+  sampleDataDesc: 'એપ ચકાસવા માટે સેમ્પલ ભાડુઆતો ઉમેરો.',
   dangerZone: 'જોખમી વિભાગ',
   exportSuccess: 'ફાઇલ સફળતાપૂર્વક ડાઉનલોડ થઈ!',
   backupSuccess: 'બેકઅપ ફાઇલ સાચવવામાં આવી!',
   restoreSuccess: 'ડેટા સફળતાપૂર્વક પુનઃસ્થાપિત થયો!',
 
-  // Notification Message Templates
-  notifDueTodayTitle: '🔔 ભાડા રિમાઇન્ડર',
-  notifDueTodayBody: (name: string, room: string, amount: string) =>
-    `${name} – રૂમ ${room}: ${amount} નું માસિક ભાડું આજે ભરવાનું થાય છે.`,
-  notifOverdueTitle: '⚠️ ભાડું બાકી છે',
-  notifOverdueBody: (name: string, amount: string) =>
-    `${name} નું ${amount} નું ભાડું હજુ પણ બાકી છે.`,
-  notifUpcomingTitle: '📢 આગામી ભાડું',
-  notifUpcomingBody: (name: string, room: string, amount: string, date: string) =>
-    `${name} – રૂમ ${room}: ${amount} નું ભાડું ${date} ના રોજ ભરવાનું છે.`,
-  notifPaymentTitle: '✅ ભાડું મળેલ છે',
-  notifPaymentBody: (name: string, amount: string, date: string) =>
-    `${name} તરફથી ₹${amount} ભાડું ${date} ના રોજ મળેલ છે.`
+  // Theme & Appearance
+  themeTitle: 'થીમ અને દેખાવ (Theme)',
+  themeDesc: 'તમારી પસંદગીની થીમ પસંદ કરો અથવા મોબાઇલ સિસ્ટમ મુજબ રાખો',
+  themeLight: 'લાઇટ મોડ (Light)',
+  themeLightDesc: 'તેજસ્વી અને સ્વચ્છ દિવસનો દેખાવ',
+  themeDark: 'ડાર્ક મોડ (Dark)',
+  themeDarkDesc: 'રાત્રે આંખો માટે શાંતિદાયક',
+  themeSystem: 'મોબાઇલ મુજબ (System)',
+  themeSystemDesc: 'મોબાઇલ ફોનના સેટિંગ્સ મુજબ આપમેળે બદલાશે'
 };

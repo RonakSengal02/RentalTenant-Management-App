@@ -2,9 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../../i18n';
 import { useApp } from '../../context/AppContext';
 import { TenantCard } from './TenantCard';
-import { calculateTenantRentStatus } from '../../utils/dateUtils';
+import { calculateTenantRentStatus, getTodayDate } from '../../utils/dateUtils';
 import { Tenant } from '../../types';
-import { Search, Plus, UserCheck, Filter, Users, X } from 'lucide-react';
+import { Search, Plus, Users, X, Filter } from 'lucide-react';
 
 interface TenantListViewProps {
   initialFilter?: string;
@@ -12,6 +12,8 @@ interface TenantListViewProps {
   onSelectTenant: (tenant: Tenant) => void;
   onRecordPayment: (tenant: Tenant) => void;
 }
+
+type FilterType = 'all' | 'paid' | 'partial' | 'pending' | 'overdue' | 'stay_ending' | 'referred' | 'inactive';
 
 export const TenantListView: React.FC<TenantListViewProps> = ({
   initialFilter = 'all',
@@ -23,63 +25,104 @@ export const TenantListView: React.FC<TenantListViewProps> = ({
   const { tenants, payments } = useApp();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'paid' | 'pending' | 'overdue' | 'inactive'>('all');
+  const [activeFilter, setActiveFilter] = useState<FilterType>(
+    (initialFilter as FilterType) || 'all'
+  );
 
-  // Filter and search logic
+  const today = getTodayDate();
+  const todayMs = today.getTime();
+  const msPerDay = 1000 * 60 * 60 * 24;
+
+  // Filter and search logic (Section 20)
   const filteredTenants = useMemo(() => {
     return tenants.filter((tenant) => {
-      // Search matching (Name, Mobile, Room Number)
+      // 1. Search matching
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
         tenant.name.toLowerCase().includes(q) ||
         tenant.mobile.includes(q) ||
+        (tenant.tenantCode && tenant.tenantCode.toLowerCase().includes(q)) ||
         tenant.roomNumber.toLowerCase().includes(q) ||
+        (tenant.referredByName && tenant.referredByName.toLowerCase().includes(q)) ||
         (tenant.address && tenant.address.toLowerCase().includes(q));
 
       if (!matchesSearch) return false;
 
-      // Status filter
+      // 2. Filter tabs
       if (activeFilter === 'inactive') {
-        return !tenant.isActive;
+        return tenant.isArchived || !tenant.isActive;
       }
 
-      if (!tenant.isActive) {
-        return false; // hide inactive in standard active lists unless inactive tab selected
-      }
+      // In active tabs, exclude archived
+      if (tenant.isArchived) return false;
 
       if (activeFilter === 'all') return true;
 
+      if (activeFilter === 'referred') {
+        return tenant.referredByType === 'existing_tenant' || Boolean(tenant.referredByName);
+      }
+
+      if (activeFilter === 'stay_ending') {
+        if (!tenant.expectedMoveOutDate) return false;
+        const expParts = tenant.expectedMoveOutDate.split('-');
+        if (expParts.length !== 3) return false;
+        const expDate = new Date(parseInt(expParts[0], 10), parseInt(expParts[1], 10) - 1, parseInt(expParts[2], 10));
+        const diff = Math.round((expDate.getTime() - todayMs) / msPerDay);
+        return diff <= 7 && diff >= -30;
+      }
+
       const rentStatus = calculateTenantRentStatus(tenant, payments);
       if (activeFilter === 'paid') return rentStatus.status === 'paid';
+      if (activeFilter === 'partial') return rentStatus.status === 'partial';
       if (activeFilter === 'pending') return rentStatus.status === 'pending';
       if (activeFilter === 'overdue') return rentStatus.status === 'overdue';
 
       return true;
     });
-  }, [tenants, payments, searchQuery, activeFilter]);
+  }, [tenants, payments, searchQuery, activeFilter, todayMs]);
 
   // Counts for tabs
   const tabCounts = useMemo(() => {
-    let paid = 0, pending = 0, overdue = 0, inactive = 0;
+    let paid = 0, partial = 0, pending = 0, overdue = 0, stayEnding = 0, referred = 0, inactive = 0;
+
     tenants.forEach((t) => {
-      if (!t.isActive) {
+      if (t.isArchived || !t.isActive) {
         inactive++;
         return;
       }
+
+      if (t.referredByType === 'existing_tenant' || t.referredByName) {
+        referred++;
+      }
+
+      if (t.expectedMoveOutDate) {
+        const expParts = t.expectedMoveOutDate.split('-');
+        if (expParts.length === 3) {
+          const expDate = new Date(parseInt(expParts[0], 10), parseInt(expParts[1], 10) - 1, parseInt(expParts[2], 10));
+          const diff = Math.round((expDate.getTime() - todayMs) / msPerDay);
+          if (diff <= 7 && diff >= -30) stayEnding++;
+        }
+      }
+
       const st = calculateTenantRentStatus(t, payments);
       if (st.status === 'paid') paid++;
+      else if (st.status === 'partial') partial++;
       else if (st.status === 'overdue') overdue++;
       else pending++;
     });
+
     return {
-      all: tenants.filter((t) => t.isActive).length,
+      all: tenants.filter((t) => !t.isArchived && t.isActive).length,
       paid,
+      partial,
       pending,
       overdue,
+      stayEnding,
+      referred,
       inactive
     };
-  }, [tenants, payments]);
+  }, [tenants, payments, todayMs]);
 
   return (
     <div className="space-y-3 pb-20 pt-2 animate-fade-in">
@@ -113,7 +156,7 @@ export const TenantListView: React.FC<TenantListViewProps> = ({
         </button>
       </div>
 
-      {/* Filter Tabs */}
+      {/* Filter Tabs (Horizontal Scrollable) */}
       <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
         <button
           onClick={() => setActiveFilter('all')}
@@ -139,14 +182,25 @@ export const TenantListView: React.FC<TenantListViewProps> = ({
         </button>
 
         <button
-          onClick={() => setActiveFilter('pending')}
+          onClick={() => setActiveFilter('partial')}
           className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
-            activeFilter === 'pending'
+            activeFilter === 'partial'
               ? 'bg-amber-600 text-white shadow-xs'
-              : 'bg-white text-amber-700 hover:bg-amber-50 border border-amber-200'
+              : 'bg-white text-amber-700 hover:bg-amber-50 border border-amber-300'
           }`}
         >
           <span>⏱</span>
+          <span>{t.partial} ({tabCounts.partial})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveFilter('pending')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
+            activeFilter === 'pending'
+              ? 'bg-slate-700 text-white shadow-xs'
+              : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+          }`}
+        >
           <span>{t.pending} ({tabCounts.pending})</span>
         </button>
 
@@ -162,6 +216,33 @@ export const TenantListView: React.FC<TenantListViewProps> = ({
           <span>{t.overdue} ({tabCounts.overdue})</span>
         </button>
 
+        {tabCounts.stayEnding > 0 && (
+          <button
+            onClick={() => setActiveFilter('stay_ending')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
+              activeFilter === 'stay_ending'
+                ? 'bg-purple-600 text-white shadow-xs'
+                : 'bg-white text-purple-700 hover:bg-purple-50 border border-purple-200'
+            }`}
+          >
+            <span>🚪</span>
+            <span>Stay Ending ({tabCounts.stayEnding})</span>
+          </button>
+        )}
+
+        {tabCounts.referred > 0 && (
+          <button
+            onClick={() => setActiveFilter('referred')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              activeFilter === 'referred'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'bg-white text-indigo-700 hover:bg-indigo-50 border border-indigo-200'
+            }`}
+          >
+            Referred ({tabCounts.referred})
+          </button>
+        )}
+
         {tabCounts.inactive > 0 && (
           <button
             onClick={() => setActiveFilter('inactive')}
@@ -171,7 +252,7 @@ export const TenantListView: React.FC<TenantListViewProps> = ({
                 : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'
             }`}
           >
-            {t.inactive} ({tabCounts.inactive})
+            Archived / Inactive ({tabCounts.inactive})
           </button>
         )}
       </div>

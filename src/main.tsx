@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App';
 import { LanguageProvider } from './i18n';
+import { ThemeProvider } from './context/ThemeContext';
 import { AppProvider } from './context/AppContext';
 import { requestPersistentStorage } from './db/db';
 import './index.css';
@@ -11,10 +12,12 @@ requestPersistentStorage();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <LanguageProvider>
-      <AppProvider>
-        <App />
-      </AppProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AppProvider>
+          <App />
+        </AppProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );

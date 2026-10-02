@@ -29,7 +29,12 @@ android/local.properties
 *.apk
 !RentManager.apk
 !public/RentManager.apk
+!RentManager-v1.0.1.apk
+!public/RentManager-v1.0.1.apk
 *.aab
+
+# Scratch test files
+scratch/
 
 # Logs
 npm-debug.log*

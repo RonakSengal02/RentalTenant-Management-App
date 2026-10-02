@@ -1,15 +1,14 @@
 import { PaymentRecord, Tenant } from '../types';
 import { formatCurrency } from './currencyUtils';
-import { formatDisplayDate } from './dateUtils';
+import { formatDisplayDate, calculateTenantLedger } from './dateUtils';
 
 /**
  * Creates a WhatsApp share URL with prefilled text
  */
 export function getWhatsAppShareUrl(mobile: string, text: string): string {
-  // Clean phone number (strip non-digits)
   let cleanNumber = mobile.replace(/[^0-9]/g, '');
   if (cleanNumber.length === 10) {
-    cleanNumber = '91' + cleanNumber; // default to India country code +91 if 10 digits
+    cleanNumber = '91' + cleanNumber;
   }
   return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(text)}`;
 }
@@ -20,36 +19,77 @@ export function getWhatsAppShareUrl(mobile: string, text: string): string {
 export function generateRentReceiptText(
   tenant: Tenant,
   payment: PaymentRecord,
-  lang: 'en' | 'gu' = 'en'
+  lang: 'en' | 'gu' = 'en',
+  remainingPending: number = 0
 ): string {
   const amountStr = formatCurrency(payment.amountPaid);
   const dateStr = formatDisplayDate(payment.paymentDate, lang);
+  const pendingStr = remainingPending > 0 ? formatCurrency(remainingPending) : '₹0 (Fully Paid)';
 
   if (lang === 'gu') {
     return `*🧾 ભાડા પહોંચ (RENT RECEIPT)*\n` +
       `--------------------------------\n` +
-      `👤 *ભાડુઆત:* ${payment.tenantName}\n` +
+      `👤 *ભાડુઆત:* ${payment.tenantName} (${tenant.tenantCode})\n` +
       `🏠 *રૂમ / મકાન નં:* ${payment.roomNumber}\n` +
       `📅 *મહિનો:* ${payment.billingMonthLabel}\n` +
       `💰 *ચૂકવેલ રકમ:* ${amountStr}\n` +
       `🗓️ *તારીખ:* ${dateStr}\n` +
       `💳 *ચૂકવણી પદ્ધતિ:* ${payment.paymentMethod}\n` +
-      (payment.referenceNotes ? `📝 *નોંધ / સંદર્ભ:* ${payment.referenceNotes}\n` : '') +
+      (payment.receivedBy ? `✍️ *સ્વીકારનાર:* ${payment.receivedBy}\n` : '') +
+      (payment.referenceNotes ? `📝 *સંદર્ભ:* ${payment.referenceNotes}\n` : '') +
+      `⏳ *બાકી રકમ:* ${pendingStr}\n` +
       `--------------------------------\n` +
       `✅ ₹${payment.amountPaid.toLocaleString('en-IN')} નું ભાડું સફળતાપૂર્વક મળેલ છે. આભાર! 🙏`;
   }
 
   return `*🧾 RENT RECEIPT*\n` +
     `--------------------------------\n` +
-    `👤 *Tenant:* ${payment.tenantName}\n` +
+    `👤 *Tenant:* ${payment.tenantName} (${tenant.tenantCode})\n` +
     `🏠 *Room / House No:* ${payment.roomNumber}\n` +
     `📅 *Billing Month:* ${payment.billingMonthLabel}\n` +
     `💰 *Amount Paid:* ${amountStr}\n` +
     `🗓️ *Payment Date:* ${dateStr}\n` +
     `💳 *Payment Method:* ${payment.paymentMethod}\n` +
-    (payment.referenceNotes ? `📝 *Reference / Note:* ${payment.referenceNotes}\n` : '') +
+    (payment.receivedBy ? `✍️ *Received By:* ${payment.receivedBy}\n` : '') +
+    (payment.referenceNotes ? `📝 *Reference:* ${payment.referenceNotes}\n` : '') +
+    `⏳ *Remaining Pending:* ${pendingStr}\n` +
     `--------------------------------\n` +
     `✅ ₹${payment.amountPaid.toLocaleString('en-IN')} rent received with thanks! 🙏`;
+}
+
+/**
+ * Generates WhatsApp share text for complete tenant rent statement
+ */
+export function generateTenantStatementShareText(
+  tenant: Tenant,
+  payments: PaymentRecord[],
+  lang: 'en' | 'gu' = 'en'
+): string {
+  const ledger = calculateTenantLedger(tenant, payments);
+  const totalRent = ledger.reduce((acc, curr) => acc + curr.totalRent, 0);
+  const totalPaid = payments.reduce((acc, curr) => acc + curr.amountPaid, 0);
+  const totalPending = Math.max(0, totalRent - totalPaid);
+
+  let text = `*📋 TENANT RENT STATEMENT*\n`;
+  text += `--------------------------------\n`;
+  text += `👤 *Tenant:* ${tenant.name} (${tenant.tenantCode})\n`;
+  text += `🏠 *Room:* #${tenant.roomNumber}\n`;
+  text += `📞 *Mobile:* ${tenant.mobile}\n`;
+  text += `💵 *Monthly Rent:* ${formatCurrency(tenant.monthlyRent)}\n\n`;
+
+  text += `*Summary:*\n`;
+  text += `• Total Rent Due: ${formatCurrency(totalRent)}\n`;
+  text += `• Total Paid: ${formatCurrency(totalPaid)}\n`;
+  text += `• Total Pending: ${formatCurrency(totalPending)}\n\n`;
+
+  text += `*Recent Payments:*\n`;
+  payments.slice(0, 5).forEach((p) => {
+    text += `✓ ${formatDisplayDate(p.paymentDate, lang)}: ${formatCurrency(p.amountPaid)} (${p.paymentMethod})\n`;
+  });
+
+  text += `--------------------------------\n`;
+  text += `Generated via RentManager.`;
+  return text;
 }
 
 /**

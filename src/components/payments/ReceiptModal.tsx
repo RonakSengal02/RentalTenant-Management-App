@@ -15,12 +15,19 @@ interface ReceiptModalProps {
 
 export const ReceiptModal: React.FC<ReceiptModalProps> = ({ payment, onClose }) => {
   const { t, language } = useLanguage();
-  const { tenants } = useApp();
+  const { tenants, payments } = useApp();
 
   if (!payment) return null;
 
   const tenant = tenants.find((t) => t.id === payment.tenantId);
   const mobile = tenant ? tenant.mobile : '';
+
+  // Calculate month balance
+  const activeStay = tenant?.stays?.find((s) => s.id === payment.stayId) || tenant?.stays?.find((s) => s.isActive) || tenant?.stays?.[0];
+  const totalCycleRent = activeStay?.monthlyRent || tenant?.monthlyRent || 0;
+  const paymentsForMonth = payments.filter((p) => p.tenantId === payment.tenantId && p.billingMonth === payment.billingMonth);
+  const totalPaidForMonth = paymentsForMonth.reduce((acc, p) => acc + p.amountPaid, 0);
+  const remainingBalance = Math.max(0, totalCycleRent - totalPaidForMonth);
 
   const waText = tenant ? generateRentReceiptText(tenant, payment, language) : '';
   const waUrl = getWhatsAppShareUrl(mobile, waText);
@@ -71,7 +78,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ payment, onClose }) 
             </div>
             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-white px-2.5 py-0.5 rounded-full mt-2 border border-emerald-200">
               <CheckCircle2 className="w-3 h-3" />
-              <span>{language === 'gu' ? 'સફળતાપૂર્વક જમા થયેલ' : 'Payment Verified (PAID)'}</span>
+              <span>{remainingBalance === 0 ? (language === 'gu' ? 'સંપૂર્ણ ચૂકતે (FULL)' : 'Fully Paid') : (language === 'gu' ? 'આંશિક ચૂકવણી (PARTIAL)' : 'Partial Payment')}</span>
             </span>
           </div>
 
@@ -79,7 +86,9 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ payment, onClose }) 
           <div className="space-y-2 text-xs divide-y divide-slate-100">
             <div className="flex justify-between py-1.5">
               <span className="text-slate-400 font-medium">{t.tenantName}</span>
-              <span className="font-bold text-slate-900">{payment.tenantName}</span>
+              <span className="font-bold text-slate-900">
+                {payment.tenantName} {tenant?.tenantCode ? `(${tenant.tenantCode})` : ''}
+              </span>
             </div>
 
             <div className="flex justify-between py-1.5">
@@ -102,6 +111,27 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ payment, onClose }) 
             <div className="flex justify-between py-1.5">
               <span className="text-slate-400 font-medium">{t.paymentMethod}</span>
               <span className="font-bold text-slate-900">{payment.paymentMethod}</span>
+            </div>
+
+            {payment.referenceNumber && (
+              <div className="flex justify-between py-1.5">
+                <span className="text-slate-400 font-medium">{language === 'gu' ? 'ટ્રાન્ઝેક્શન / ચેક નં.' : 'Txn / Cheque No.'}</span>
+                <span className="font-mono font-bold text-slate-900">{payment.referenceNumber}</span>
+              </div>
+            )}
+
+            {payment.receivedBy && (
+              <div className="flex justify-between py-1.5">
+                <span className="text-slate-400 font-medium">{language === 'gu' ? 'સ્વીકારનાર' : 'Received By'}</span>
+                <span className="font-bold text-slate-800">{payment.receivedBy}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between py-1.5 bg-slate-50 px-2 rounded-lg">
+              <span className="text-slate-600 font-bold">{language === 'gu' ? 'બાકી રકમ (ચુકવણી પછી)' : 'Remaining Pending Balance'}</span>
+              <span className={`font-extrabold ${remainingBalance === 0 ? 'text-emerald-700' : 'text-amber-700'}`}>
+                {remainingBalance === 0 ? '₹0 (Clear)' : formatCurrency(remainingBalance)}
+              </span>
             </div>
 
             {payment.referenceNotes && (

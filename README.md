@@ -1,10 +1,13 @@
 # RentManager 
 
-[![Download Android APK](https://img.shields.io/badge/📱_DOWNLOAD_ANDROID_APK-DIRECT_DOWNLOAD_(4.5_MB)-059669?style=for-the-badge&logo=android&logoColor=white)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/main/RentManager.apk)
+[![Download Android APK v1.0.1](https://img.shields.io/badge/📱_DOWNLOAD_ANDROID_APK-v1.0.1_(LATEST)-2563eb?style=for-the-badge&logo=android&logoColor=white)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/RentalTenant-Management-Mobile-App/RentManager-v1.0.1.apk)
+[![Download Android APK v1.0.0](https://img.shields.io/badge/📱_PREVIOUS_VERSION-v1.0.0-059669?style=for-the-badge&logo=android&logoColor=white)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/RentalTenant-Management-Mobile-App/RentManager.apk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-> ### 📲 **[Click Here to Download Android App: RentManager.apk (4.5 MB)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/main/RentManager.apk)**
+> ### 📲 **[Click Here to Download Latest Android App: RentManager-v1.0.1.apk (v1.0.1)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/RentalTenant-Management-Mobile-App/RentManager-v1.0.1.apk)**
 > ⚡ **Direct Download**: Tap the link above on your phone or PC to immediately download the Android APK.
+> - **v1.0.1 New Features**: Dark Mode / Light Mode / Mobile System Default, Strict 10-Digit Mobile Validation, Returning Tenant Stay History, Rent Ledger & Partial Payments, 4-Digit Security PIN Lock, Room Vacancy Management, Interactive Calendar, Activity Log.
+> - **Preserved v1.0.0 Version**: [Download RentManager.apk (v1.0.0)](https://github.com/RonakSengal02/RentalTenant-Management-App/raw/RentalTenant-Management-Mobile-App/RentManager.apk)
 > - **100% Local Phone Storage** (IndexedDB persistent disk storage)
 > - **100% Offline Capable** (Works without internet)
 > - **Bilingual Support** (English + ગુજરાતી)

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useLanguage } from '../../i18n';
 import { useApp } from '../../context/AppContext';
-import { Bell, Home, Globe, Smartphone, Monitor } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
+import { Bell, Home, Globe, Smartphone, Monitor, Lock, Sun, Moon } from 'lucide-react';
 
 interface HeaderProps {
   onOpenNotifications: () => void;
@@ -15,7 +16,8 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleMobileFrame
 }) => {
   const { language, setLanguage, t } = useLanguage();
-  const { unreadNotifCount } = useApp();
+  const { unreadNotifCount, hasPinSet, lockApp } = useApp();
+  const { themeMode, isDark, toggleTheme } = useTheme();
 
   const toggleLang = () => {
     setLanguage(language === 'en' ? 'gu' : 'en');
@@ -43,7 +45,18 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          {/* Quick Lock Button if PIN protection enabled */}
+          {hasPinSet && (
+            <button
+              onClick={lockApp}
+              title={language === 'gu' ? 'એપ લોક કરો' : 'Lock App'}
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            >
+              <Lock className="w-4 h-4 text-slate-600" />
+            </button>
+          )}
+
           {/* Mobile Frame toggle (helpful when running in desktop browser) */}
           <button
             onClick={onToggleMobileFrame}
@@ -61,6 +74,25 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <Globe className="w-3.5 h-3.5 text-blue-600" />
             <span>{language === 'en' ? 'ગુજરાતી' : 'English'}</span>
+          </button>
+
+          {/* Quick Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all border border-slate-200 active:scale-95"
+            title={
+              themeMode === 'system'
+                ? (language === 'gu' ? `થીમ: મોબાઇલ મુજબ (${isDark ? 'ડાર્ક' : 'લાઇટ'})` : `Theme: Mobile Default (${isDark ? 'Dark' : 'Light'})`)
+                : isDark
+                ? (language === 'gu' ? 'થીમ: ડાર્ક મોડ' : 'Theme: Dark Mode')
+                : (language === 'gu' ? 'થીમ: લાઇટ મોડ' : 'Theme: Light Mode')
+            }
+          >
+            {isDark ? (
+              <Sun className="w-4 h-4 text-amber-500" />
+            ) : (
+              <Moon className="w-4 h-4 text-slate-600" />
+            )}
           </button>
 
           {/* Notification Bell */}

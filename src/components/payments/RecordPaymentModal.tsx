@@ -26,6 +26,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const [amountPaid, setAmountPaid] = useState<string>('');
   const [paymentDate, setPaymentDate] = useState<string>(formatDateToISO(new Date()));
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('UPI');
+  const [receivedBy, setReceivedBy] = useState<string>('Landlord / Owner');
+  const [referenceNumber, setReferenceNumber] = useState<string>('');
   const [referenceNotes, setReferenceNotes] = useState<string>('');
   const [billingMonth, setBillingMonth] = useState<string>('');
   const [billingMonthLabel, setBillingMonthLabel] = useState<string>('');
@@ -70,6 +72,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
     }
     setPaymentDate(formatDateToISO(new Date()));
     setPaymentMethod('UPI');
+    setReceivedBy('Landlord / Owner');
+    setReferenceNumber('');
     setReferenceNotes('');
     setErrors({});
   }, [isOpen, preselectedTenant, tenants]);
@@ -96,6 +100,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   if (!isOpen) return null;
 
   const currentTenant = tenants.find((t) => t.id === selectedTenantId);
+  const activeStay = currentTenant?.stays?.find((s) => s.isActive) || currentTenant?.stays?.[currentTenant.stays.length - 1];
+  const monthlyRent = activeStay?.monthlyRent || currentTenant?.monthlyRent || 0;
+
+  // Real-time calculation of pending balance for the chosen billing month
+  const alreadyPaidForMonth = payments
+    .filter((p) => p.tenantId === currentTenant?.id && p.billingMonth === billingMonth)
+    .reduce((sum, p) => sum + p.amountPaid, 0);
+
+  const prevPending = Math.max(0, monthlyRent - alreadyPaidForMonth);
+  const enteredAmount = Number(amountPaid) || 0;
+  const remainingPending = Math.max(0, prevPending - enteredAmount);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,6 +128,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       setIsSubmitting(true);
       const newPayment = await recordRentPayment({
         tenantId: currentTenant.id,
+        stayId: activeStay?.id,
         tenantName: currentTenant.name,
         roomNumber: currentTenant.roomNumber,
         amountPaid: Number(amountPaid),
@@ -120,6 +136,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         billingMonthLabel,
         paymentDate,
         paymentMethod,
+        receivedBy: receivedBy.trim() || 'Landlord',
+        referenceNumber: referenceNumber.trim() || undefined,
         referenceNotes: referenceNotes.trim()
       });
 
@@ -167,7 +185,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             >
               {tenants.map((t) => (
                 <option key={t.id} value={t.id}>
-                  {t.name} (Room #{t.roomNumber}) - Rent: {formatCurrency(t.monthlyRent)}
+                  {t.name} ({t.tenantCode || 'TEN-0000'}) - Room #{t.roomNumber} - Rent: {formatCurrency(t.monthlyRent)}
                 </option>
               ))}
             </select>
@@ -189,6 +207,32 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Real-time Balance Breakdown Box */}
+          <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 text-xs space-y-1.5">
+            <div className="flex justify-between text-slate-600">
+              <span>{language === 'gu' ? 'માસિક ભાડું:' : 'Cycle Rent:'}</span>
+              <span className="font-bold text-slate-900">{formatCurrency(monthlyRent)}</span>
+            </div>
+            <div className="flex justify-between text-slate-600">
+              <span>{language === 'gu' ? 'અગાઉ ચૂકવેલ:' : 'Already Paid:'}</span>
+              <span className="font-bold text-emerald-600">{formatCurrency(alreadyPaidForMonth)}</span>
+            </div>
+            <div className="flex justify-between text-slate-600 pt-1 border-t border-slate-200">
+              <span>{language === 'gu' ? 'બાકી રકમ (ચુકવણી પહેલાં):' : 'Pending Before Payment:'}</span>
+              <span className="font-bold text-amber-700">{formatCurrency(prevPending)}</span>
+            </div>
+            <div className="flex justify-between items-center pt-1 border-t border-slate-200 text-slate-800 font-extrabold">
+              <span>{language === 'gu' ? 'ચુકવણી પછી બાકી:' : 'Remaining Balance After:'}</span>
+              <span className={`px-2 py-0.5 rounded-lg text-xs font-black ${
+                remainingPending === 0
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : 'bg-amber-100 text-amber-800'
+              }`}>
+                {formatCurrency(remainingPending)}
+              </span>
+            </div>
           </div>
 
           {/* Amount Paid */}
@@ -213,18 +257,33 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             {errors.amount && <p className="text-[11px] text-rose-500 mt-1">{errors.amount}</p>}
           </div>
 
-          {/* Payment Date */}
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              {t.paymentDate} *
-            </label>
-            <div className="relative">
-              <Calendar className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          {/* Payment Date & Received By in 2 columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                {t.paymentDate} *
+              </label>
+              <div className="relative">
+                <Calendar className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="date"
+                  value={paymentDate}
+                  onChange={(e) => setPaymentDate(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                {language === 'gu' ? 'સ્વીકારનાર' : 'Received By'}
+              </label>
               <input
-                type="date"
-                value={paymentDate}
-                onChange={(e) => setPaymentDate(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                type="text"
+                value={receivedBy}
+                onChange={(e) => setReceivedBy(e.target.value)}
+                placeholder="Landlord / Owner"
+                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
               />
             </div>
           </div>
@@ -234,15 +293,15 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             <label className="block text-xs font-bold text-slate-700 mb-1.5">
               {t.paymentMethod} *
             </label>
-            <div className="grid grid-cols-2 gap-2">
-              {(['UPI', 'Cash', 'Bank Transfer', 'Other'] as PaymentMethod[]).map((method) => {
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {(['UPI', 'Cash', 'Bank Transfer', 'Cheque'] as PaymentMethod[]).map((method) => {
                 const isSelected = paymentMethod === method;
                 return (
                   <button
                     key={method}
                     type="button"
                     onClick={() => setPaymentMethod(method)}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-between ${
+                    className={`py-2 px-2.5 rounded-xl text-xs font-bold border transition-all flex items-center justify-between ${
                       isSelected
                         ? 'bg-emerald-50 border-emerald-500 text-emerald-800 ring-2 ring-emerald-500/20'
                         : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
@@ -255,27 +314,44 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                         ? t.methodUPI
                         : method === 'Bank Transfer'
                         ? t.methodBank
+                        : method === 'Cheque'
+                        ? 'Cheque'
                         : t.methodOther}
                     </span>
-                    {isSelected && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
+                    {isSelected && <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Reference Notes / Transaction ID */}
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              {t.paymentRefNotes}
-            </label>
-            <input
-              type="text"
-              value={referenceNotes}
-              onChange={(e) => setReferenceNotes(e.target.value)}
-              placeholder={t.paymentRefPlaceholder}
-              className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
-            />
+          {/* Reference / Transaction ID and Notes */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                {language === 'gu' ? 'ટ્રાન્ઝેક્શન / સંદર્ભ નંબર' : 'Txn / Cheque / UTR No.'}
+              </label>
+              <input
+                type="text"
+                value={referenceNumber}
+                onChange={(e) => setReferenceNumber(e.target.value)}
+                placeholder="e.g. UPI-198273"
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                {t.paymentRefNotes}
+              </label>
+              <input
+                type="text"
+                value={referenceNotes}
+                onChange={(e) => setReferenceNotes(e.target.value)}
+                placeholder={t.paymentRefPlaceholder}
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+              />
+            </div>
           </div>
 
           {/* Submit Actions */}

@@ -18,12 +18,13 @@ export const en = {
   amount: 'Amount',
   loading: 'Loading...',
   confirmDelete: 'Are you sure you want to delete this?',
-  deleteWarning: 'This will also remove all associated payment records.',
+  deleteWarning: 'This will permanently remove the record.',
   yesDelete: 'Yes, Delete',
   noKeep: 'No, Keep',
 
   // Statuses
   paid: 'Paid',
+  partial: 'Partial',
   pending: 'Pending',
   overdue: 'Overdue',
   dueToday: 'Due Today',
@@ -33,6 +34,8 @@ export const en = {
   navDashboard: 'Dashboard',
   navTenants: 'Tenants',
   navPayments: 'Payments',
+  navReports: 'Reports',
+  navCalendar: 'Calendar',
   navNotifications: 'Alerts',
   navSettings: 'Settings',
 
@@ -45,31 +48,46 @@ export const en = {
   pendingTenants: 'Pending Tenants',
   overdueTenants: 'Overdue Tenants',
   upcomingRentDue: 'Upcoming & Due Today',
-  noUpcomingRent: 'No upcoming rent due in next 5 days.',
+  noUpcomingRent: 'No upcoming rent due in next 7 days.',
   recentPayments: 'Recent Payments',
   noRecentPayments: 'No payments recorded recently.',
   quickActions: 'Quick Actions',
   addTenantBtn: '+ Add Tenant',
   recordPaymentBtn: 'Record Payment',
   downloadApkTitle: 'Download Android App',
-  downloadApkSub: 'Direct APK install for 100% offline use',
+  downloadApkSub: 'Direct APK install for 100% offline use (v1.0.1)',
   downloadApkBtn: 'Download APK (4.5 MB)',
 
   // Tenants Section
   tenantsTitle: 'Tenant Directory',
-  searchPlaceholder: 'Search name, mobile or room...',
+  searchPlaceholder: 'Search name, mobile, tenant ID, room...',
   addTenantModalTitle: 'Register New Tenant',
   editTenantModalTitle: 'Edit Tenant Details',
+  tenantId: 'Tenant ID',
   tenantName: 'Tenant Full Name',
-  tenantNamePlaceholder: 'e.g. Rahul Patel',
+  tenantNamePlaceholder: 'e.g. Subhash Sharma',
   mobileNumber: 'Mobile Number',
   mobilePlaceholder: 'e.g. 9876543210',
+  alternateMobile: 'Alternate Mobile Number',
+  alternateMobilePlaceholder: 'e.g. 9876500000',
   tenantPhoto: 'Tenant Photo',
+  documentPhoto: 'Aadhaar / ID Document Photo',
+  uploadDoc: 'Upload Identity Document',
+  viewDoc: 'View Document',
+  replaceDoc: 'Replace Document',
+  deleteDoc: 'Delete Document',
+  occupation: 'Occupation / Work',
+  occupationPlaceholder: 'e.g. Software Engineer, Business',
+  emergencyContact: 'Emergency Contact Person & Phone',
+  emergencyPlaceholder: 'e.g. Ramesh Patel (Father) - 9825011111',
+  occupantsCount: 'Number of Occupants',
   roomNumber: 'Room / House Number',
   roomPlaceholder: 'e.g. 102 or Flat B-4',
-  address: 'Address / Permanent Address',
-  addressPlaceholder: 'e.g. Anand, Gujarat',
+  address: 'Permanent Address',
+  addressPlaceholder: 'e.g. Near Station, Vadodara, Gujarat',
   joiningDate: 'Move-in / Joining Date',
+  expectedMoveOutDate: 'Expected Move-out Date',
+  actualMoveOutDate: 'Actual Move-out Date',
   monthlyRentAmount: 'Monthly Rent (₹)',
   monthlyRentPlaceholder: 'e.g. 7000',
   securityDeposit: 'Security Deposit (₹)',
@@ -84,16 +102,49 @@ export const en = {
   whatsappReceipt: 'Send Receipt',
   emptyTenants: 'No tenants found. Click "+ Add Tenant" to get started.',
 
+  // Referral System
+  referredBy: 'Came Through / Referred By',
+  referredByDirect: 'Direct (No Referral)',
+  referredByExisting: 'Existing Tenant',
+  referredByOther: 'Other Person',
+  selectReferringTenant: 'Select Referring Tenant',
+  referringPersonName: 'Referral Person Name & Phone',
+  referredTenants: 'Referred Tenants',
+
+  // Stay History
+  staysTitle: 'Stay History',
+  startNewStay: 'Start New Stay',
+  endCurrentStay: 'End Current Stay',
+  stayDuration: 'Stay Duration',
+  activeStay: 'Current Active Stay',
+  pastStays: 'Past Stays',
+  notes: 'Notes',
+
+  // Timeline
+  timelineTitle: 'Visual Activity Timeline',
+
+  // Rent Ledger & Partial Payments
+  rentLedger: 'Monthly Rent Ledger',
+  totalRentDue: 'Total Rent',
+  totalPaid: 'Total Paid',
+  totalPending: 'Pending',
+  remainingPending: 'Remaining Pending',
+  previousPending: 'Previous Pending',
+  receivedBy: 'Received By',
+  receivedByPlaceholder: 'e.g. Chirag / Landlord',
+  transactionRef: 'Transaction / Ref No.',
+
   // Payment Section
   paymentsTitle: 'Rent Payments & History',
   recordPaymentModalTitle: 'Record Rent Payment',
   selectTenant: 'Select Tenant',
   rentAmountPaid: 'Rent Amount Paid (₹)',
   paymentDate: 'Payment Date',
-  paymentMethod: 'Payment Method',
+  paymentMethod: 'Payment Mode',
   methodCash: 'Cash',
   methodUPI: 'UPI (GPay / PhonePe / Paytm)',
   methodBank: 'Bank Transfer (NEFT/IMPS)',
+  methodOtherOnline: 'Other Online',
   methodOther: 'Cheque / Other',
   paymentRefNotes: 'Reference No. / Notes',
   paymentRefPlaceholder: 'e.g. UPI Ref 12345 or Cheque #789',
@@ -107,15 +158,60 @@ export const en = {
   thisYear: 'This Year',
   emptyPayments: 'No payment history recorded yet.',
 
+  // Reports
+  monthlyReport: 'Monthly Rent Report',
+  yearlyReport: 'Yearly Rent Report',
+  collectionTrend: 'Monthly Collection Trend',
+  occupancyRate: 'Occupancy Stats',
+  vacantRooms: 'Vacant Rooms',
+
+  // Room Management
+  roomsTitle: 'Room & Property Management',
+  vacant: 'Vacant',
+  occupied: 'Occupied',
+  reserved: 'Reserved',
+  addRoom: 'Add Room',
+  floor: 'Floor',
+  propertyName: 'Property Name',
+
+  // Calendar
+  calendarTitle: 'Events & Due Calendar',
+
+  // Security & PIN
+  pinLock: '4-Digit PIN Security',
+  enterPin: 'Enter 4-Digit PIN',
+  setPin: 'Set 4-Digit PIN',
+  confirmPin: 'Confirm 4-Digit PIN',
+  changePin: 'Change PIN',
+  disablePin: 'Disable PIN Lock',
+  unlock: 'Unlock Application',
+  incorrectPin: 'Incorrect PIN. Please try again.',
+  pinSetSuccess: 'PIN successfully configured!',
+
+  // Archive & Duplicate
+  archiveTenant: 'Archive Tenant',
+  restoreTenant: 'Restore Tenant',
+  duplicateWarning: 'Possible Existing Tenant Found',
+  duplicateDesc: 'A tenant with this mobile number already exists.',
+  openExisting: 'Open Existing Tenant',
+  createNewAnyway: 'Create New Tenant Anyway',
+
+  // Activity Log
+  activityLog: 'Activity / Audit Log',
+
   // Notifications
   notificationsTitle: 'Rent Alerts & Reminders',
   markAllAsRead: 'Mark All as Read',
   clearAllNotifications: 'Clear All',
   noNotifications: 'All caught up! No notifications right now.',
   reminderSettings: 'Reminder Preferences',
+  notify7DaysBefore: '7 Days Before Due Date',
   notify3DaysBefore: '3 Days Before Due Date',
+  notifyTomorrow: '1 Day Before (Tomorrow)',
   notifyOnDueDate: 'On Due Date (Due Today)',
+  notifyOverdue: 'When Overdue',
   notify3DaysAfter: '3 Days After (Overdue)',
+  notifyStayEnding: 'Stay Ending & Ended Alert',
   enablePushNotifications: 'Browser Push Notifications',
   pushGranted: 'Enabled',
   pushDenied: 'Permission Denied',
@@ -125,34 +221,31 @@ export const en = {
   settingsTitle: 'Settings & Data Safety',
   language: 'App Language / ભાષા',
   dataSafety: 'Data Safety & Backup',
-  dataSafetyDesc: 'Your rental data is stored safely on your device.',
+  dataSafetyDesc: 'Your rental data is 100% offline and stored safely on your device.',
   backupData: 'Backup Data (Download JSON)',
   restoreData: 'Restore Data (Upload JSON)',
   exportExcel: 'Export to Excel / CSV',
   downloadPDFReport: 'Download Full Report (PDF)',
   downloadReceiptPDF: 'Download Receipt (PDF)',
   downloadTenantStatementPDF: 'Download Statement (PDF)',
+  includeIdDocInExport: 'Include Identity Document in Export',
   sampleData: 'Reset to Sample Data',
   clearAllData: 'Clear All Database Data',
-  sampleDataDesc: 'Loads sample tenants (Rahul Patel, Priya Shah, etc.) to test the app.',
+  sampleDataDesc: 'Loads sample tenants to test the app.',
   dangerZone: 'Danger Zone',
   exportSuccess: 'Export downloaded successfully!',
   backupSuccess: 'Backup file saved!',
   restoreSuccess: 'Database restored successfully!',
 
-  // Notification Message Templates
-  notifDueTodayTitle: '🔔 Rent Reminder',
-  notifDueTodayBody: (name: string, room: string, amount: string) =>
-    `${name} – Room ${room}: Monthly rent of ${amount} is due today.`,
-  notifOverdueTitle: '⚠️ Rent Pending',
-  notifOverdueBody: (name: string, amount: string) =>
-    `${name}'s rent of ${amount} is still pending.`,
-  notifUpcomingTitle: '📢 Upcoming Rent',
-  notifUpcomingBody: (name: string, room: string, amount: string, date: string) =>
-    `${name} – Room ${room}: Rent of ${amount} is due on ${date}.`,
-  notifPaymentTitle: '✅ Payment Received',
-  notifPaymentBody: (name: string, amount: string, date: string) =>
-    `₹${amount} rent received from ${name} on ${date}.`
+  // Theme & Appearance
+  themeTitle: 'Theme & Appearance',
+  themeDesc: 'Choose your visual mode or match your mobile phone',
+  themeLight: 'Light Mode',
+  themeLightDesc: 'Bright, clean daytime interface',
+  themeDark: 'Dark Mode',
+  themeDarkDesc: 'Easy on eyes at night',
+  themeSystem: 'Default as Mobile',
+  themeSystemDesc: 'Automatically follows mobile device settings'
 };
 
 export type TranslationType = typeof en;

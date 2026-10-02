@@ -199,7 +199,9 @@ export const PaymentHistoryView: React.FC<PaymentHistoryViewProps> = ({ onOpenRe
             </button>
           </div>
 
-          {filteredPayments.map((payment) => (
+          {filteredPayments.map((payment) => {
+            const tenant = tenants.find((t) => t.id === payment.tenantId);
+            return (
             <div
               key={payment.id}
               className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-card flex items-center justify-between gap-3 hover:border-slate-300 transition-colors"
@@ -209,6 +211,11 @@ export const PaymentHistoryView: React.FC<PaymentHistoryViewProps> = ({ onOpenRe
                   <h4 className="font-bold text-sm text-slate-900 truncate">
                     {payment.tenantName}
                   </h4>
+                  {tenant?.tenantCode && (
+                    <span className="font-mono text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                      {tenant.tenantCode}
+                    </span>
+                  )}
                   <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
                     #{payment.roomNumber}
                   </span>
@@ -222,10 +229,20 @@ export const PaymentHistoryView: React.FC<PaymentHistoryViewProps> = ({ onOpenRe
                   <span>{formatDisplayDate(payment.paymentDate, language)}</span>
                 </div>
 
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex flex-wrap items-center gap-1.5 mt-1">
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
                     {payment.paymentMethod}
                   </span>
+                  {payment.referenceNumber && (
+                    <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      Txn: {payment.referenceNumber}
+                    </span>
+                  )}
+                  {payment.receivedBy && (
+                    <span className="text-[10px] text-slate-500">
+                      Recv: {payment.receivedBy}
+                    </span>
+                  )}
                   {payment.referenceNotes && (
                     <span className="text-[11px] text-slate-400 truncate max-w-[150px]">
                       {payment.referenceNotes}
@@ -263,7 +280,8 @@ export const PaymentHistoryView: React.FC<PaymentHistoryViewProps> = ({ onOpenRe
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

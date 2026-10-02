@@ -20,7 +20,10 @@ import {
   PhoneCall,
   Receipt,
   Smartphone,
-  Download
+  Download,
+  Home,
+  FileText,
+  BarChart3
 } from 'lucide-react';
 
 interface DashboardViewProps {
@@ -29,6 +32,10 @@ interface DashboardViewProps {
   onSelectTenant: (tenant: Tenant) => void;
   onNavigateToTenants: (filter?: string) => void;
   onNavigateToPayments: () => void;
+  onOpenRooms?: () => void;
+  onOpenCalendar?: () => void;
+  onOpenMonthlyReport?: () => void;
+  onOpenYearlyReport?: () => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -36,7 +43,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onOpenRecordPayment,
   onSelectTenant,
   onNavigateToTenants,
-  onNavigateToPayments
+  onNavigateToPayments,
+  onOpenRooms,
+  onOpenCalendar,
+  onOpenMonthlyReport,
+  onOpenYearlyReport
 }) => {
   const { t, language } = useLanguage();
   const { tenants, payments, metrics, setSelectedReceiptPayment } = useApp();
@@ -116,6 +127,57 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         >
           <CreditCard className="w-4 h-4" />
           <span>{t.recordPaymentBtn}</span>
+        </button>
+      </div>
+
+      {/* Quick Tools & Reports Grid */}
+      <div className="grid grid-cols-4 gap-2">
+        <button
+          onClick={onOpenRooms}
+          className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-slate-200 shadow-card hover:border-blue-300 hover:bg-blue-50/40 transition-all active:scale-95 text-center"
+        >
+          <span className="p-2 rounded-xl bg-blue-50 text-blue-600 mb-1">
+            <Home className="w-4 h-4" />
+          </span>
+          <span className="text-[11px] font-bold text-slate-800 line-clamp-1">
+            {language === 'gu' ? 'રૂમ સંચાલન' : 'Rooms'}
+          </span>
+        </button>
+
+        <button
+          onClick={onOpenCalendar}
+          className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-slate-200 shadow-card hover:border-indigo-300 hover:bg-indigo-50/40 transition-all active:scale-95 text-center"
+        >
+          <span className="p-2 rounded-xl bg-indigo-50 text-indigo-600 mb-1">
+            <Calendar className="w-4 h-4" />
+          </span>
+          <span className="text-[11px] font-bold text-slate-800 line-clamp-1">
+            {language === 'gu' ? 'કેલેન્ડર' : 'Calendar'}
+          </span>
+        </button>
+
+        <button
+          onClick={onOpenMonthlyReport}
+          className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-slate-200 shadow-card hover:border-emerald-300 hover:bg-emerald-50/40 transition-all active:scale-95 text-center"
+        >
+          <span className="p-2 rounded-xl bg-emerald-50 text-emerald-600 mb-1">
+            <FileText className="w-4 h-4" />
+          </span>
+          <span className="text-[11px] font-bold text-slate-800 line-clamp-1">
+            {language === 'gu' ? 'માસિક' : 'Monthly'}
+          </span>
+        </button>
+
+        <button
+          onClick={onOpenYearlyReport}
+          className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-white border border-slate-200 shadow-card hover:border-purple-300 hover:bg-purple-50/40 transition-all active:scale-95 text-center"
+        >
+          <span className="p-2 rounded-xl bg-purple-50 text-purple-600 mb-1">
+            <TrendingUp className="w-4 h-4" />
+          </span>
+          <span className="text-[11px] font-bold text-slate-800 line-clamp-1">
+            {language === 'gu' ? 'વાર્ષિક' : 'Yearly'}
+          </span>
         </button>
       </div>
 
